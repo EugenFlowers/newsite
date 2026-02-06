@@ -3,164 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кредитный калькулятор</title>
+    <title>HTML Браузер</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: #f8f9fa;
-            color: #333;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        h1 {
-            font-size: 24px;
-            font-weight: 600;
-            margin: 0 0 20px;
-            color: #1a1a1a;
-            text-align: center;
-        }
-        .info {
-            background: #e8f4fd;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            font-size: 14px;
-            text-align: center;
-        }
-        .calculator {
-            background: white;
-            padding: 20px;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            box-sizing: border-box;
-            margin: 10px 0;
-        }
-        button {
-            width: 100%;
-            padding: 15px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            margin: 10px 0;
-        }
-        button:hover {
-            background: #0056b3;
-        }
-        .disclaimer {
-            background: #fff3cd;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 12px;
-            border-left: 4px solid #ffc107;
-            margin-top: 20px;
-        }
-        .telegram-btn {
-            background: #0088cc;
-            margin-top: 20px;
-        }
-        .telegram-btn:hover {
-            background: #006ba1;
-        }
-        .erid {
-            font-size: 10px;
-            color: #666;
-            text-align: center;
-            margin-top: 20px;
-        }
-        label {
-            font-size: 13px;
-            color: #555;
-            display: block;
-            margin-top: 8px;
-        }
+        body { margin: 0; font-family: Arial, sans-serif; height: 100vh; display: flex; flex-direction: column; }
+        #address-bar { padding: 10px; background: #f0f0f0; border-bottom: 1px solid #ccc; }
+        #url-input { width: 70%; padding: 8px; font-size: 16px; }
+        #go-btn { padding: 8px 16px; background: #007bff; color: white; border: none; cursor: pointer; }
+        #go-btn:hover { background: #0056b3; }
+        #iframe-container { flex: 1; border: none; }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Кредитный калькулятор</h1>
-        
-        <div class="info">
-            <p>Сделайте расчёт и выберите подходящий для Вас вариант:</p>
-        </div>
-
-        <div class="calculator">
-            <h3 style="margin: 0 0 15px; font-size: 18px;"></h3>
-
-            <label for="amount">Сумма, рублей</label>
-            <input type="number" id="amount" placeholder="Сумма, руб." min="1000" max="30000">
-
-            <label for="days">Срок, дней</label>
-            <input type="number" id="days" placeholder="Срок, дней" min="7" max="30">
-
-            <label for="rate">Процентная ставка в день, %</label>
-            <input type="number" id="rate" placeholder="Ставка, % в день" min="0" max="2" step="0.01">
-
-            <label for="grace">Беспроцентный период, дней (если есть)</label>
-            <input type="number" id="grace" placeholder="Беспроцентный период, дней" min="0" max="30">
-
-            <button onclick="calculate()">Рассчитать примерные условия</button>
-            <div id="result" style="margin-top: 15px; font-size: 14px; font-weight: 500;"></div>
-        </div>
-
-        <a href="https://t.me/zaymer_app_bot" style="text-decoration: none;">
-            <button class="telegram-btn">Подробнее в Telegram боте</button>
-        </a>
-
-        <div class="disclaimer">
-            <strong>Важная информация:</strong><br>
-            Услуга предоставляется лицензированными МФО (ЦБ РФ № соответствующий номер).<br>
-            Информация ознакомительная. Не является публичной офертой.<br>
-            Наличие и длительность беспроцентного периода зависят от индивидуальных условий. Подробнее в боте.
-        </div>
-
-        <div class="erid">
-            Реклама. ООО "ФинПомощь", ИНН 1234567890. erid: 1A2B3C4D5E6F7G8H
-        </div>
+    <div id="address-bar">
+        <input type="url" id="url-input" value="https://netangels.ru/?p_ref=u120620" placeholder="Введите URL">
+        <button id="go-btn">Перейти</button>
     </div>
-
+    <div id="iframe-container">
+        <iframe id="browser-frame" src="https://netangels.ru/?p_ref=u120620" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+    </div>
     <script>
-        function calculate() {
-            const amount = Number(document.getElementById('amount').value) || 10000;
-            const days = Number(document.getElementById('days').value) || 14;
-            const ratePercent = document.getElementById('rate').value === '' ? 0.5 : Number(document.getElementById('rate').value);
-            const grace = Number(document.getElementById('grace').value) || 0;
+        const urlInput = document.getElementById('url-input');
+        const goBtn = document.getElementById('go-btn');
+        const iframe = document.getElementById('browser-frame');
 
-            const validGrace = Math.max(0, Math.min(grace, days));
-            const dailyRate = ratePercent / 100;
+        goBtn.addEventListener('click', () => {
+            const url = urlInput.value.trim();
+            if (url) {
+                iframe.src = url.startsWith('http') ? url : 'https://' + url;
+            }
+        });
 
-            const chargeableDays = Math.max(0, days - validGrace);
-            const total = Math.round(amount * (1 + dailyRate * chargeableDays));
-            const overpay = total - amount;
-
-            document.getElementById('result').innerHTML = 
-                `Примерно: к возврату ${total.toLocaleString()} руб.<br>
-                Переплата ${overpay.toLocaleString()} руб.<br>
-                <small>Расчет приблизительный и не учитывает акции и индивидуальные условия. Точные условия в боте.</small>`;
-        }
+        urlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                goBtn.click();
+            }
+        });
     </script>
 </body>
 </html>
+
 
 
 
