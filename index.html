@@ -2,62 +2,40 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Встроенный браузер</title>
-    <style>
-        body { margin: 0; font-family: Arial, sans-serif; height: 100vh; display: flex; flex-direction: column; }
-        #address-bar { padding: 10px; background: #f0f0f0; border-bottom: 1px solid #ccc; }
-        #url-input { width: 70%; padding: 8px; font-size: 16px; }
-        #go-btn { padding: 8px 16px; background: #007bff; color: #fff; border: none; cursor: pointer; }
-        #go-btn:hover { background: #0056b3; }
-        #iframe-container { flex: 1; }
-        iframe { width: 100%; height: 100%; border: none; }
-    </style>
+    <title>Встроенный браузер (same-origin)</title>
 </head>
 <body>
-    <div id="address-bar">
-        <input type="url" id="url-input"
-               value="https://netangels.ru/?p_ref=u120620"
-               placeholder="Введите URL">
-        <button id="go-btn">Перейти</button>
-    </div>
-
-    <div id="iframe-container">
-        <!--
-          Важно:
-          - НЕТ allow-popups / allow-top-navigation.
-          - Попытки открыть новое окно, как правило, будут блокированы,
-            окно не откроется, пользователь останется в этом iframe.
-        -->
-        <iframe
-            id="browser-frame"
+    <iframe id="browser-frame"
             src="https://netangels.ru/?p_ref=u120620"
-            sandbox="allow-scripts allow-same-origin allow-forms"
-        ></iframe>
-    </div>
+            style="width:100%;height:100vh;border:none;"
+            sandbox="allow-scripts allow-same-origin allow-forms">
+    </iframe>
 
     <script>
-        const urlInput = document.getElementById('url-input');
-        const goBtn = document.getElementById('go-btn');
         const iframe = document.getElementById('browser-frame');
 
-        function navigate(url) {
-            if (!url) return;
-            iframe.src = url.startsWith('http') ? url : 'https://' + url;
+        function injectHandler() {
+            try {
+                const w = iframe.contentWindow;
+                if (!w) return;
+
+                // Перехватываем window.open внутри iframe
+                w.open = function (url) {
+                    if (url) {
+                        iframe.src = url;   // открываем «новое окно» в том же iframe
+                    }
+                    return null;           // не создаём реальное окно
+                };
+            } catch (e) {
+                // cross-origin: доступа нет, перехват невозможен
+            }
         }
 
-        goBtn.addEventListener('click', () => {
-            navigate(urlInput.value.trim());
-        });
-
-        urlInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                navigate(urlInput.value.trim());
-            }
-        });
+        iframe.addEventListener('load', injectHandler);
     </script>
 </body>
 </html>
+
 
 
 
