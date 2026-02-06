@@ -2,11 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy"
-          content="default-src * 'unsafe-inline' 'unsafe-eval'; frame-ancestors *; 
-                   sandbox allow-scripts allow-forms allow-same-origin;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Браузер</title>
+    <title>Встроенный браузер без новых окон</title>
     <style>
         body { margin: 0; font-family: Arial, sans-serif; height: 100vh; display: flex; flex-direction: column; }
         #address-bar { padding: 10px; background: #f0f0f0; border-bottom: 1px solid #ccc; }
@@ -24,12 +21,18 @@
                placeholder="Введите URL">
         <button id="go-btn">Перейти</button>
     </div>
+
     <div id="iframe-container">
-        <!-- Убрали allow-popups, чтобы window.open/_blank чаще блокировались -->
-        <iframe id="browser-frame"
-                src="https://netangels.ru/?p_ref=u120620"
-                sandbox="allow-scripts allow-same-origin allow-forms">
-        </iframe>
+        <!--
+          ВАЖНО:
+          - НЕТ allow-popups => window.open и target="_blank" будут блокироваться в большинстве браузеров.
+          - allow-scripts, allow-same-origin нужны, чтобы сайт мог работать (JS, куки и т.п.).
+        -->
+        <iframe
+            id="browser-frame"
+            src="https://netangels.ru/?p_ref=u120620"
+            sandbox="allow-scripts allow-same-origin allow-forms"
+        ></iframe>
     </div>
 
     <script>
@@ -37,35 +40,23 @@
         const goBtn = document.getElementById('go-btn');
         const iframe = document.getElementById('browser-frame');
 
-        function loadUrl(raw) {
-            const url = raw.trim();
+        function navigate() {
+            const url = urlInput.value.trim();
             if (!url) return;
             iframe.src = url.startsWith('http') ? url : 'https://' + url;
         }
 
-        goBtn.addEventListener('click', () => loadUrl(urlInput.value));
-        urlInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') loadUrl(urlInput.value);
-        });
+        goBtn.addEventListener('click', navigate);
 
-        // Работает ТОЛЬКО для того же домена, из-за политики безопасности браузера.[web:16][web:21]
-        iframe.addEventListener('load', () => {
-            try {
-                const doc = iframe.contentDocument || iframe.contentWindow.document;
-                const links = doc.querySelectorAll('a[target="_blank"]');
-                links.forEach(a => a.setAttribute('target', '_self'));
-                // Можно также перехватывать window.open, если тот же домен.
-                iframe.contentWindow.open = function(url, target) {
-                    iframe.src = url;
-                    return null;
-                };
-            } catch (e) {
-                // Если другой домен — сюда попадём, доступ к содержимому будет запрещён.
+        urlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                navigate();
             }
         });
     </script>
 </body>
 </html>
+
 
 
 
