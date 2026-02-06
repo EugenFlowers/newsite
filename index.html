@@ -3,18 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Встроенный браузер</title>
+    <title>Мой встроенный браузер</title>
     <style>
-        body { margin: 0; font-family: Arial, sans-serif; height: 100vh; display: flex; flex-direction: column; }
-        #address-bar { padding: 10px; background: #f0f0f0; border-bottom: 1px solid #ccc; }
-        #url-input { width: 70%; padding: 8px; font-size: 16px; }
-        #go-btn { padding: 8px 16px; background: #007bff; color: #fff; border: none; cursor: pointer; }
-        #go-btn:hover { background: #0056b3; }
-        #iframe-container { flex: 1; }
-        iframe { width: 100%; height: 100%; border: none; }
+        html, body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        #wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        #address-bar {
+            padding: 8px;
+            background: #f0f0f0;
+            border-bottom: 1px solid #ccc;
+        }
+        #url-input {
+            width: 70%;
+            padding: 6px 8px;
+            font-size: 14px;
+        }
+        #go-btn {
+            padding: 6px 14px;
+            font-size: 14px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        #go-btn:hover {
+            background: #0056b3;
+        }
+        #iframe-container {
+            flex: 1;
+        }
+        #browser-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
     </style>
 </head>
 <body>
+<div id="wrapper">
     <div id="address-bar">
         <input type="url" id="url-input"
                value="https://netangels.ru/?p_ref=u120620"
@@ -24,8 +58,10 @@
 
     <div id="iframe-container">
         <!--
-          allow-popups: даём скриптам внутри iframe право вызвать window.open / target="_blank".[web:53][web:58]
-          allow-scripts, allow-same-origin, allow-forms — для нормальной работы сайта.[web:6]
+          ВАЖНО:
+          - allow-popups: даём сайту право вызывать window.open/target="_blank".[web:53][web:58]
+          - allow-scripts, allow-same-origin, allow-forms — для нормальной работы.[web:6]
+          - БЕЗ allow-top-navigation(-by-user-activation), чтобы сайт не мог выкинуть пользователя из iframe в верхнее окно.
         -->
         <iframe
             id="browser-frame"
@@ -33,51 +69,69 @@
             sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
         ></iframe>
     </div>
+</div>
 
-    <script>
-        const urlInput = document.getElementById('url-input');
-        const goBtn = document.getElementById('go-btn');
-        const iframe = document.getElementById('browser-frame');
+<script>
+    const iframe = document.getElementById('browser-frame');
+    const urlInput = document.getElementById('url-input');
+    const goBtn = document.getElementById('go-btn');
 
-        function navigate(url) {
-            if (!url) return;
-            iframe.src = url.startsWith('http') ? url : 'https://' + url;
+    function normalizeUrl(url) {
+        if (!url) return '';
+        url = url.trim();
+        if (!url) return '';
+        if (!/^https?:\/\//i.test(url)) {
+            url = 'https://' + url;
         }
+        return url;
+    }
 
-        goBtn.addEventListener('click', () => {
-            navigate(urlInput.value.trim());
-        });
+    function navigate(url) {
+        const u = normalizeUrl(url);
+        if (!u) return;
+        iframe.src = u;
+        urlInput.value = u;
+    }
 
-        urlInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                navigate(urlInput.value.trim());
-            }
-        });
+    goBtn.addEventListener('click', () => navigate(urlInput.value));
+    urlInput.addEventListener('keypress', e => {
+        if (e.key === 'Enter') navigate(urlInput.value);
+    });
 
-        function injectOpenOverride() {
-            try {
-                const w = iframe.contentWindow;
-                if (!w) return;
+    // 1) Пытаемся перехватить window.open внутри iframe (работает только при same-origin)
+    function tryOverrideWindowOpen() {
+        try {
+            const w = iframe.contentWindow;
+            if (!w) return;
 
-                // Сохраняем оригинальный window.open
-                const originalOpen = w.open;
+            const originalOpen = w.open;
 
-                w.open = function (url, target, features) {
-                    // Если есть URL — открываем его в этом же iframe
-                    if (url) {
-                        iframe.src = url;
-                        return iframe.contentWindow || null;
+            w.open = function (url, target, features) {
+                if (url) {
+                    // "Новое окно" открываем в том же iframe
+                    const finalUrl = normalizeUrl(url);
+                    if (finalUrl) {
+                        iframe.src = finalUrl;
+                        urlInput.value = finalUrl;
                     }
-                    // Если URL не передали — ведём себя как обычно
-                    return originalOpen.call(w, url, target, features);
-                };
-            } catch (e) {
-                // Если cross-origin, доступа к contentWindow нет — перехват невозможен.[web:41][web:48]
-            }
+                    // возвращаем контент iframe как «окно»
+                    return iframe.contentWindow || null;
+                }
+                // fallback — ведём себя как оригинальный window.open
+                return originalOpen.call(w, url, target, features);
+            };
+        } catch (e) {
+            // cross-origin — доступ к contentWindow запрещён, переопределить нельзя.[web:41][web:48]
         }
+    }
 
-        iframe.addEventListener('load', injectOpenOverride);
-    </script>
+    // 2) Пытаемся поймать target="_blank" через поддержку браузера
+    // Часть браузеров, если sandbox + allow-popups, всё равно блокируют popups
+    // или открывают их как новые вкладки; полностью перехватить это нельзя.[web:53][web:59]
+    iframe.addEventListener('load', () => {
+        tryOverrideWindowOpen();
+    });
+</script>
 </body>
 </html>
 
