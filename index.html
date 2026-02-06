@@ -2,39 +2,85 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Встроенный браузер (same-origin)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Встроенный браузер</title>
+    <style>
+        body { margin: 0; font-family: Arial, sans-serif; height: 100vh; display: flex; flex-direction: column; }
+        #address-bar { padding: 10px; background: #f0f0f0; border-bottom: 1px solid #ccc; }
+        #url-input { width: 70%; padding: 8px; font-size: 16px; }
+        #go-btn { padding: 8px 16px; background: #007bff; color: #fff; border: none; cursor: pointer; }
+        #go-btn:hover { background: #0056b3; }
+        #iframe-container { flex: 1; }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
 </head>
 <body>
-    <iframe id="browser-frame"
+    <div id="address-bar">
+        <input type="url" id="url-input"
+               value="https://netangels.ru/?p_ref=u120620"
+               placeholder="Введите URL">
+        <button id="go-btn">Перейти</button>
+    </div>
+
+    <div id="iframe-container">
+        <!--
+          allow-popups: даём скриптам внутри iframe право вызвать window.open / target="_blank".[web:53][web:58]
+          allow-scripts, allow-same-origin, allow-forms — для нормальной работы сайта.[web:6]
+        -->
+        <iframe
+            id="browser-frame"
             src="https://netangels.ru/?p_ref=u120620"
-            style="width:100%;height:100vh;border:none;"
-            sandbox="allow-scripts allow-same-origin allow-forms">
-    </iframe>
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+        ></iframe>
+    </div>
 
     <script>
+        const urlInput = document.getElementById('url-input');
+        const goBtn = document.getElementById('go-btn');
         const iframe = document.getElementById('browser-frame');
 
-        function injectHandler() {
+        function navigate(url) {
+            if (!url) return;
+            iframe.src = url.startsWith('http') ? url : 'https://' + url;
+        }
+
+        goBtn.addEventListener('click', () => {
+            navigate(urlInput.value.trim());
+        });
+
+        urlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                navigate(urlInput.value.trim());
+            }
+        });
+
+        function injectOpenOverride() {
             try {
                 const w = iframe.contentWindow;
                 if (!w) return;
 
-                // Перехватываем window.open внутри iframe
-                w.open = function (url) {
+                // Сохраняем оригинальный window.open
+                const originalOpen = w.open;
+
+                w.open = function (url, target, features) {
+                    // Если есть URL — открываем его в этом же iframe
                     if (url) {
-                        iframe.src = url;   // открываем «новое окно» в том же iframe
+                        iframe.src = url;
+                        return iframe.contentWindow || null;
                     }
-                    return null;           // не создаём реальное окно
+                    // Если URL не передали — ведём себя как обычно
+                    return originalOpen.call(w, url, target, features);
                 };
             } catch (e) {
-                // cross-origin: доступа нет, перехват невозможен
+                // Если cross-origin, доступа к contentWindow нет — перехват невозможен.[web:41][web:48]
             }
         }
 
-        iframe.addEventListener('load', injectHandler);
+        iframe.addEventListener('load', injectOpenOverride);
     </script>
 </body>
 </html>
+
 
 
 
