@@ -1,137 +1,171 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой встроенный браузер</title>
-    <style>
-        html, body {
-            margin: 0;
-            height: 100%;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
-        }
-        #wrapper {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-        #address-bar {
-            padding: 8px;
-            background: #f0f0f0;
-            border-bottom: 1px solid #ccc;
-        }
-        #url-input {
-            width: 70%;
-            padding: 6px 8px;
-            font-size: 14px;
-        }
-        #go-btn {
-            padding: 6px 14px;
-            font-size: 14px;
-            background: #007bff;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-        #go-btn:hover {
-            background: #0056b3;
-        }
-        #iframe-container {
-            flex: 1;
-        }
-        #browser-frame {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>✅ ЗАЙМ СРАЗУ ✅ БЕЗ ОТКАЗА ✅ ДЕНЬГИ НА КАРТУ</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 10px;
+      background-color: #ffffff;
+      color: #000000;
+    }
+    .bank-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    .bank-item {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(0, 128, 0, 0.15);
+      width: 320px;
+      display: flex;
+      flex-direction: column;
+      overflow: visible;
+      padding: 15px;
+      border: 2px solid #4caf50;
+      transition: box-shadow 0.3s ease;
+    }
+    .bank-item:hover {
+      box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+    }
+    .bank-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .bank-logo {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    .bank-name {
+      font-weight: 700;
+      font-size: 1.3em;
+      line-height: 1.2;
+      flex-grow: 1;
+      color: #000000;
+    }
+    .bank-description {
+      font-size: 1em;
+      line-height: 1.4;
+      margin-bottom: 20px;
+      white-space: normal;
+      color: #000000;
+      text-align: left; /* выравнивание по левому краю */
+    }
+    .bank-description ul {
+      list-style-type: none; /* убираем точки */
+      padding-left: 0; /* убираем отступ слева */
+      margin: 0;
+    }
+    .bank-footer {
+      text-align: center;
+    }
+    .btn-apply {
+      background-color: #4caf50;
+      border: none;
+      color: white;
+      padding: 15px 30px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1.2em;
+      font-weight: 700;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      letter-spacing: 0.05em;
+    }
+    .btn-apply:hover {
+      background-color: #388e3c;
+    }
+    @media (max-width: 360px) {
+      .bank-item {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
-<div id="wrapper">
-    <div id="address-bar">
-        <input type="url" id="url-input"
-               value="https://netangels.ru/?p_ref=u120620"
-               placeholder="Введите URL">
-        <button id="go-btn">Перейти</button>
+
+  <h1></h1>
+  <div class="bank-list">
+    <div class="bank-item">
+      <div class="bank-header">
+        <img src="moneymanvip.png" alt="Логотип банка 1" class="bank-logo" />
+        <div class="bank-name">MoneyMan</div>
+      </div>
+      <div class="bank-description">
+        <ul>
+          <li>✅ Выгодные процентные ставки</li>
+          <li>✅ Быстрое одобрение заявки</li>
+          <li>✅ Кредит до 1 000 000 рублей</li>
+          <li>✅ Онлайн заявление без посещения офиса</li>
+        </ul>
+      </div>
+      <div class="bank-footer">
+        <button class="btn-apply" onclick="window.open('https://links.inssmart.ru/offers?subId=2a940lq4x6&offerId=1276', '_blank')">ОФОРМИТЬ</button>
+      </div>
     </div>
 
-    <div id="iframe-container">
-        <!--
-          ВАЖНО:
-          - allow-popups: даём сайту право вызывать window.open/target="_blank".[web:53][web:58]
-          - allow-scripts, allow-same-origin, allow-forms — для нормальной работы.[web:6]
-          - БЕЗ allow-top-navigation(-by-user-activation), чтобы сайт не мог выкинуть пользователя из iframe в верхнее окно.
-        -->
-        <iframe
-            id="browser-frame"
-            src="https://netangels.ru/?p_ref=u120620"
-            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-        ></iframe>
+    <div class="bank-item">
+      <div class="bank-header">
+        <img src="beforesalary.png" alt="Логотип банка 2" class="bank-logo" />
+        <div class="bank-name">До зарплаты</div>
+      </div>
+      <div class="bank-description">
+        <ul>
+          <li>✅ Низкий первоначальный взнос</li>
+          <li>✅ Сроки кредитования до 5 лет</li>
+          <li>✅ Возможность досрочного погашения</li>
+          <li>✅ Специальные условия для пенсионеров</li>
+        </ul>
+      </div>
+      <div class="bank-footer">
+        <button class="btn-apply" onclick="window.open('https://links.inssmart.ru/offers?subId=2a940lq4x6&offerId=1286', '_blank')">ОФОРМИТЬ</button>
+      </div>
     </div>
-</div>
 
-<script>
-    const iframe = document.getElementById('browser-frame');
-    const urlInput = document.getElementById('url-input');
-    const goBtn = document.getElementById('go-btn');
+    <div class="bank-item">
+      <div class="bank-header">
+        <img src="logos/bank3.png" alt="Логотип банка 3" class="bank-logo" />
+        <div class="bank-name">Банк 3</div>
+      </div>
+      <div class="bank-description">
+        <ul>
+          <li>✅ Быстрое оформление кредита</li>
+          <li>✅ Удобный личный кабинет</li>
+          <li>✅ Решение за 2 минуты</li>
+        </ul>
+      </div>
+      <div class="bank-footer">
+        <button class="btn-apply" onclick="window.open('https://example.com/bank3', '_blank')">ОФОРМИТЬ</button>
+      </div>
+    </div>
 
-    function normalizeUrl(url) {
-        if (!url) return '';
-        url = url.trim();
-        if (!url) return '';
-        if (!/^https?:\/\//i.test(url)) {
-            url = 'https://' + url;
-        }
-        return url;
-    }
+    <div class="bank-item">
+      <div class="bank-header">
+        <img src="logos/bank4.png" alt="Логотип банка 4" class="bank-logo" />
+        <div class="bank-name">Банк 4</div>
+      </div>
+      <div class="bank-description">
+        <ul>
+          <li>✅ Онлайн-заявка без визита в офис</li>
+          <li>✅ Минимум документов</li>
+          <li>✅ Мгновенное зачисление на карту</li>
+        </ul>
+      </div>
+      <div class="bank-footer">
+        <button class="btn-apply" onclick="window.open('https://example.com/bank4', '_blank')">ОФОРМИТЬ</button>
+      </div>
+    </div>
+  </div>
 
-    function navigate(url) {
-        const u = normalizeUrl(url);
-        if (!u) return;
-        iframe.src = u;
-        urlInput.value = u;
-    }
-
-    goBtn.addEventListener('click', () => navigate(urlInput.value));
-    urlInput.addEventListener('keypress', e => {
-        if (e.key === 'Enter') navigate(urlInput.value);
-    });
-
-    // 1) Пытаемся перехватить window.open внутри iframe (работает только при same-origin)
-    function tryOverrideWindowOpen() {
-        try {
-            const w = iframe.contentWindow;
-            if (!w) return;
-
-            const originalOpen = w.open;
-
-            w.open = function (url, target, features) {
-                if (url) {
-                    // "Новое окно" открываем в том же iframe
-                    const finalUrl = normalizeUrl(url);
-                    if (finalUrl) {
-                        iframe.src = finalUrl;
-                        urlInput.value = finalUrl;
-                    }
-                    // возвращаем контент iframe как «окно»
-                    return iframe.contentWindow || null;
-                }
-                // fallback — ведём себя как оригинальный window.open
-                return originalOpen.call(w, url, target, features);
-            };
-        } catch (e) {
-            // cross-origin — доступ к contentWindow запрещён, переопределить нельзя.[web:41][web:48]
-        }
-    }
-
-    // 2) Пытаемся поймать target="_blank" через поддержку браузера
-    // Часть браузеров, если sandbox + allow-popups, всё равно блокируют popups
-    // или открывают их как новые вкладки; полностью перехватить это нельзя.[web:53][web:59]
-    iframe.addEventListener('load', () => {
-        tryOverrideWindowOpen();
-    });
-</script>
 </body>
 </html>
 
