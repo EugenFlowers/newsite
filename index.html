@@ -36,8 +36,10 @@
     .bank-header {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
       margin-bottom: 12px;
+      height: 80px;
     }
     .bank-logo {
       width: 80px;
@@ -45,24 +47,17 @@
       object-fit: contain;
       flex-shrink: 0;
     }
-    .bank-name {
-      font-weight: 700;
-      font-size: 1.3em;
-      line-height: 1.2;
-      flex-grow: 1;
-      color: #000000;
-    }
     .bank-description {
       font-size: 1em;
       line-height: 1.4;
       margin-bottom: 20px;
       white-space: normal;
       color: #000000;
-      text-align: left; /* выравнивание по левому краю */
+      text-align: left;
     }
     .bank-description ul {
-      list-style-type: none; /* убираем точки */
-      padding-left: 0; /* убираем отступ слева */
+      list-style-type: none;
+      padding-left: 0;
       margin: 0;
     }
     .bank-footer {
@@ -97,8 +92,7 @@
   <div class="bank-list">
     <div class="bank-item">
       <div class="bank-header">
-        <img src="dobrozaym.jpg" alt="Логотип банка 1" class="bank-logo" />
-        <div class="bank-name">Доброзайм</div>
+        <img src="dobrozaym.jpg" alt="Логотип МФО 1" class="bank-logo" />
       </div>
       <div class="bank-description">
         <ul>
@@ -115,8 +109,7 @@
 
     <div class="bank-item">
       <div class="bank-header">
-        <img src="turbozaim.jpg" alt="Логотип банка 2" class="bank-logo" />
-        <div class="bank-name">Турбозайм</div>
+        <img src="turbozaim.jpg" alt="Логотип МФО 2" class="bank-logo" />
       </div>
       <div class="bank-description">
         <ul>
@@ -133,8 +126,7 @@
 
     <div class="bank-item">
       <div class="bank-header">
-        <img src="zaymer.jpg" alt="Логотип банка 3" class="bank-logo" />
-        <div class="bank-name">Займер</div>
+        <img src="zaymer.jpg" alt="Логотип МФО 3" class="bank-logo" />
       </div>
       <div class="bank-description">
         <ul>
@@ -150,8 +142,7 @@
 
     <div class="bank-item">
       <div class="bank-header">
-        <img src="payps.jpg" alt="Логотип банка 4" class="bank-logo" />
-        <div class="bank-name">Pay P.S.</div>
+        <img src="payps.jpg" alt="Логотип МФО 4" class="bank-logo" />
       </div>
       <div class="bank-description">
         <ul>
@@ -168,6 +159,7 @@
 
 </body>
 </html>
+
 
 
 
